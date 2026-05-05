@@ -23,6 +23,20 @@
     --line-soft: #2A2622;
     --serif: 'Cormorant Garamond', 'Times New Roman', serif;
     --sans: 'Manrope', system-ui, sans-serif;
+
+    /* ── Container system ── */
+    --max-w: 1680px;
+    --gutter: 3rem;
+  }
+  /* Fluid gutter for small screens */
+  @media (max-width: 768px) { :root { --gutter: 1.5rem; } }
+  @media (max-width: 480px) { :root { --gutter: 1.15rem; } }
+  /* Comfortable gutter for ultra-wide */
+  @media (min-width: 1920px) { :root { --gutter: 4rem; } }
+  /* Extra vertical rhythm on large screens */
+  @media (min-width: 1600px) {
+    .section { padding-top: 11rem; padding-bottom: 11rem; }
+    .hero { padding-top: 10rem; padding-bottom: 5rem; min-height: 96vh; }
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -73,19 +87,25 @@
   .nav {
     position: fixed;
     top: 0; left: 0; right: 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.75rem 3rem;
     z-index: 100;
+    padding: 1.75rem 0;
     transition: background 0.6s ease, padding 0.4s ease;
   }
   .nav.scrolled {
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
-    padding: 1rem 3rem;
+    padding: 1rem 0;
     border-bottom: 1px solid rgba(26, 24, 22, 0.06);
+  }
+  .nav-inner {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
   }
   .logo {
     font-family: var(--serif);
@@ -149,18 +169,52 @@
   }
   .nav-links a:hover::after { width: 100%; }
 
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 2.75rem;
+  }
+  .nav-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.75rem 1.5rem 0.75rem 1.6rem;
+    border: 1px solid var(--text);
+    border-radius: 999px;
+    font-size: 0.74rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--text);
+    font-weight: 500;
+    line-height: 1;
+    transition: background 0.45s cubic-bezier(0.65,0,0.35,1),
+                color 0.45s cubic-bezier(0.65,0,0.35,1),
+                border-color 0.45s ease,
+                gap 0.45s ease;
+  }
+  .nav-cta svg { width: 22px; height: 8px; }
+  .nav-cta:hover {
+    background: var(--purple);
+    color: #fff;
+    border-color: var(--purple);
+    gap: 1.1rem;
+  }
+
   .nav-toggle { display: none; }
 
   /* ────── HERO ────── */
   .hero {
     position: relative;
     min-height: 100vh;
-    padding: 8rem 3rem 4rem;
+    padding: 8rem var(--gutter) 4rem;
     overflow: hidden;
     display: grid;
     grid-template-columns: 1.05fr 1fr;
     align-items: center;
     gap: 2rem;
+    max-width: var(--max-w);
+    margin: 0 auto;
+    width: 100%;
   }
   .hero-content {
     position: relative;
@@ -337,40 +391,31 @@
     color: var(--text-soft);
   }
 
-  /* Travelling dot (hero) */
+  /* Travelling dot — sized to match the hero-title period so the visual handoff is seamless */
   .traveler {
     position: absolute;
-    width: 14px; height: 14px;
+    width: clamp(16px, 1.6vw, 28px);
+    height: clamp(16px, 1.6vw, 28px);
     border-radius: 50%;
     background: var(--orange);
     top: 0; left: 0;
-    z-index: 6;
+    z-index: 12;
     pointer-events: none;
-    box-shadow: 0 0 0 0 rgba(232,144,42,0.4);
     transform: translate(-50%, -50%);
-  }
-  .traveler::after {
-    content: "";
-    position: absolute;
-    inset: -8px;
-    border-radius: 50%;
-    border: 1px solid rgba(232,144,42,0.35);
-    opacity: 0;
-    animation: pulse 2.4s ease-in-out infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { transform: scale(1); opacity: 0; }
-    50% { transform: scale(1.4); opacity: 1; }
+    will-change: transform;
   }
 
   /* ────── COMMON SECTION ────── */
   .section {
     position: relative;
-    padding: 9rem 3rem;
+    padding: 9rem var(--gutter);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    max-width: var(--max-w);
+    margin: 0 auto;
+    width: 100%;
   }
   .eyebrow {
     font-size: 0.7rem;
@@ -485,108 +530,161 @@
   }
   .balance-words span:last-child { color: var(--purple); }
 
-  /* ────── SECTION 04 — TRANSFORMATION ────── */
-  .transform {
+  /* ────── PROJECTS GALLERY ────── */
+  .projects { display: flex; flex-direction: column; }
+  .projects-head {
     display: grid;
-    grid-template-columns: 0.8fr 1.2fr;
-    gap: 4rem;
-    align-items: center;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 3rem;
+    margin-bottom: 5rem;
   }
-  .transform-stage {
-    position: relative;
-    height: 70vh;
-    min-height: 540px;
+  .projects-filter {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
   }
-  .transform-stage svg {
-    width: 100%; height: 100%; overflow: visible;
+  .projects-filter button {
+    background: transparent;
+    border: 1px solid rgba(26,24,22,0.18);
+    cursor: pointer;
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--text);
+    padding: 0.85rem 1.4rem;
+    border-radius: 999px;
+    transition: background 0.4s ease, color 0.4s ease, border-color 0.4s ease;
   }
-  .transform-copy p {
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 1.3rem;
-    color: var(--text-soft);
-    margin-top: 2rem;
-    max-width: 28ch;
-    line-height: 1.5;
+  .projects-filter button:hover { border-color: var(--purple); color: var(--purple); }
+  .projects-filter button.active {
+    background: var(--text);
+    color: #FFF;
+    border-color: var(--text);
   }
 
-  /* ────── SECTION 05 — PORTFOLIO ────── */
-  .portfolio { padding-bottom: 3rem; }
-  .portfolio-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-bottom: 5rem;
-    gap: 3rem;
+  .project-feature {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 4rem;
+    margin-bottom: 6rem;
+    align-items: center;
   }
-  .portfolio-head .meta {
-    font-family: var(--serif);
-    font-style: italic;
-    color: var(--text-soft);
-    max-width: 30ch;
-  }
-  .gallery {
-    display: flex;
-    gap: 2.5rem;
-    overflow-x: auto;
-    padding: 0 1rem 3rem;
-    margin: 0 -1rem;
-    scrollbar-width: none;
-    scroll-snap-type: x mandatory;
-  }
-  .gallery::-webkit-scrollbar { display: none; }
-  .work {
-    flex: 0 0 clamp(280px, 32vw, 460px);
-    scroll-snap-align: start;
-  }
-  .work-frame {
-    position: relative;
-    aspect-ratio: 4/5;
+  .project-feature-img {
+    aspect-ratio: 4 / 3;
     background: var(--bg-soft);
     overflow: hidden;
-    border: 1px solid rgba(26,24,22,0.08);
+    border: 1px solid rgba(26,24,22,0.06);
+    position: relative;
   }
-  .work-frame::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(140deg,
-      rgba(91,26,120,0.08) 0%,
-      transparent 40%,
-      rgba(232,144,42,0.06) 100%);
-    z-index: 1;
+  .project-feature-img svg { width: 100%; height: 100%; display: block; }
+  .project-feature-meta .num {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--orange);
+    font-size: 0.95rem;
+    display: block;
+    margin-bottom: 1.2rem;
+    letter-spacing: 0.04em;
   }
-  .work-frame svg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
+  .project-feature-meta h3 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(2rem, 3.6vw, 3rem);
+    line-height: 1.05;
+    margin-bottom: 1.3rem;
+    color: var(--text);
+    letter-spacing: -0.02em;
   }
-  .work-frame .stroke { stroke: var(--line); stroke-width: 0.8; fill: none; vector-effect: non-scaling-stroke; }
-  .work-frame .fill-purple { fill: rgba(91,26,120,0.18); }
-  .work-frame .fill-orange { fill: rgba(232,144,42,0.22); }
-  .work-meta {
-    margin-top: 1.4rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 1rem;
-  }
-  .work-meta .num {
+  .project-feature-meta p {
     font-family: var(--serif);
     font-style: italic;
     color: var(--text-soft);
-    font-size: 0.95rem;
+    font-size: 1.15rem;
+    line-height: 1.5;
+    margin-bottom: 2.2rem;
+    max-width: 32ch;
   }
-  .work-meta .title {
+  .project-specs {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.4rem 2rem;
+    border-top: 1px solid rgba(26,24,22,0.14);
+    padding-top: 1.6rem;
+    position: relative;
+  }
+  .project-specs::before {
+    content: "";
+    position: absolute;
+    top: -1px; left: 0;
+    width: 36px; height: 1px;
+    background: var(--orange);
+  }
+  .project-specs li { display: flex; flex-direction: column; gap: 0.4rem; }
+  .project-specs li span {
+    font-size: 0.62rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--text-soft);
+  }
+  .project-specs li strong {
     font-family: var(--serif);
-    font-size: 1.3rem;
     font-weight: 400;
-    flex: 1;
+    font-size: 1.1rem;
+    color: var(--text);
   }
-  .work-meta .tag {
-    font-size: 0.68rem;
-    letter-spacing: 0.22em;
+
+  .project-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3rem 2.2rem;
+  }
+  .project-card {
+    cursor: pointer;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .project-card.is-hidden {
+    opacity: 0;
+    transform: translateY(12px);
+    pointer-events: none;
+    height: 0;
+    overflow: hidden;
+    margin: 0; padding: 0;
+  }
+  .project-img {
+    aspect-ratio: 4 / 5;
+    background: var(--bg-soft);
+    border: 1px solid rgba(26,24,22,0.06);
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.5s ease;
+  }
+  .project-card:hover .project-img { transform: translateY(-6px); }
+  .project-img svg { width: 100%; height: 100%; display: block; }
+  .project-meta {
+    margin-top: 1.3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .project-meta .num {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--text-soft);
+    font-size: 0.9rem;
+  }
+  .project-meta h4 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 1.4rem;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  .project-meta .tag {
+    font-size: 0.66rem;
+    letter-spacing: 0.24em;
     text-transform: uppercase;
     color: var(--text-soft);
   }
@@ -742,8 +840,13 @@
 
   /* ────── FOOTER ────── */
   footer {
-    padding: 4rem 3rem 3rem;
     border-top: 1px solid rgba(26,24,22,0.12);
+    width: 100%;
+  }
+  .footer-inner {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 4rem var(--gutter) 3rem;
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
@@ -753,7 +856,7 @@
     text-transform: uppercase;
     color: var(--text-soft);
   }
-  footer .f-brand {
+  .footer-inner .f-brand {
     font-family: var(--serif);
     font-style: italic;
     font-size: 1.4rem;
@@ -761,135 +864,124 @@
     letter-spacing: 0;
     color: var(--text);
   }
-  footer .f-brand span { color: var(--orange); }
-  footer ul { list-style: none; display: flex; gap: 2rem; }
+  .footer-inner .f-brand span { color: var(--orange); }
+  .footer-inner ul { list-style: none; display: flex; gap: 2rem; flex-wrap: wrap; }
 
-  /* ────── ABOUT (restructured: statement → substance → signature) ────── */
+  /* ────── ABOUT — compact, editorial, single-screen ────── */
   .about {
+    min-height: auto;
+    padding-top: 7rem;
+    padding-bottom: 5rem;
+    gap: 4rem;
+  }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 4rem;
+    align-items: end;
+  }
+  .about-title h2 {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(2.6rem, 6vw, 5.2rem);
+    line-height: 1;
+    letter-spacing: -0.025em;
+    max-width: 14ch;
+    color: var(--text);
+  }
+  .about-title h2 em { color: var(--orange); font-style: italic; font-weight: 400; }
+
+  .about-side {
     display: flex;
     flex-direction: column;
-    gap: 0;
-    align-items: stretch;
+    gap: 2.2rem;
+    align-items: flex-end;
+    text-align: right;
   }
-
-  /* 1. STATEMENT */
-  .about-statement {
-    position: relative;
-    padding-bottom: 4.5rem;
-  }
-  .about-statement .section-title {
-    max-width: 18ch;
-    margin-top: 0.5rem;
-  }
-  .about-year {
-    position: absolute;
-    top: 0; right: 0;
+  .about-side p {
     font-family: var(--serif);
     font-style: italic;
-    font-size: 0.95rem;
     color: var(--text-soft);
-    display: inline-flex;
-    align-items: center;
-    gap: 0.85rem;
-  }
-  .about-year::before {
-    content: "";
-    width: 36px; height: 1px;
-    background: var(--text-soft);
-    display: inline-block;
+    font-size: 1.15rem;
+    line-height: 1.5;
+    max-width: 32ch;
+    margin: 0;
   }
 
-  /* 2. SUBSTANCE — lead text + stats side-by-side */
-  .about-body {
+  .about-sig {
     display: grid;
-    grid-template-columns: 1.15fr 1fr;
-    gap: 5rem;
-    align-items: start;
-    padding: 4.5rem 0;
+    gap: 0.4rem;
+    border-top: 1px solid rgba(26,24,22,0.14);
+    padding-top: 1.2rem;
+    position: relative;
+    width: fit-content;
+    text-align: right;
+  }
+  .about-sig::before {
+    content: "";
+    position: absolute;
+    top: -1px; right: 0;
+    width: 36px; height: 1px;
+    background: var(--orange);
+  }
+  .sig-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--text-soft);
+  }
+  .sig-name {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(1.6rem, 2.4vw, 2.4rem);
+    color: var(--text);
+    letter-spacing: -0.01em;
+    font-weight: 400;
+    line-height: 1;
+  }
+  .sig-name span { color: var(--orange); font-style: normal; }
+  .sig-role {
+    font-size: 0.75rem;
+    color: var(--text-soft);
+    letter-spacing: 0.04em;
+  }
+
+  /* Metrics ribbon */
+  .about-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    padding-top: 1.8rem;
     border-top: 1px solid rgba(26,24,22,0.14);
     position: relative;
   }
-  .about-body::before {
+  .about-metrics::before {
     content: "";
     position: absolute;
     top: -1px; left: 0;
     width: 60px; height: 1px;
     background: var(--orange);
   }
-  .about-lead p {
-    font-family: var(--serif);
-    font-size: 1.4rem;
-    font-style: italic;
-    color: var(--text);
-    max-width: 36ch;
-    line-height: 1.5;
-    margin-bottom: 1.5rem;
-    font-weight: 300;
-  }
-  .about-lead p:last-child { margin-bottom: 0; }
-  .about-lead p:first-child::first-letter {
-    font-family: var(--serif);
-    color: var(--purple);
-    font-size: 2.6rem;
-    line-height: 1;
-    float: left;
-    margin: 0.15rem 0.55rem 0 0;
-    font-weight: 400;
-  }
-
-  .about-stats {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2.5rem 3rem;
-  }
-
-  /* 3. SIGNATURE — founder strip */
-  .founder-strip {
-    display: grid;
-    grid-template-columns: 1fr 1.6fr;
-    gap: 4rem;
-    padding-top: 4rem;
-    border-top: 1px solid rgba(26,24,22,0.14);
-    align-items: end;
-    position: relative;
-  }
-  .founder-strip::before {
-    content: "";
-    position: absolute;
-    top: -1px; left: 0;
-    width: 90px; height: 1px;
-    background: var(--orange);
-  }
-  .founder-meta {
+  .about-metrics > div {
     display: flex;
     flex-direction: column;
-    gap: 0.7rem;
+    gap: 0.55rem;
   }
-  .founder-label {
-    font-size: 0.7rem;
+  .about-metrics .num {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(2rem, 3.2vw, 3rem);
+    line-height: 1;
+    color: var(--purple);
+    letter-spacing: -0.02em;
+  }
+  .about-metrics .num em { color: var(--orange); font-style: italic; font-weight: 400; }
+  .about-metrics .lbl {
+    font-size: 0.65rem;
     letter-spacing: 0.3em;
     text-transform: uppercase;
     color: var(--text-soft);
   }
-  .founder-role {
-    font-size: 0.85rem;
-    color: var(--text-soft);
-    letter-spacing: 0.02em;
-    line-height: 1.5;
-    max-width: 26ch;
-  }
-  .founder-name-wrap { text-align: right; }
-  .founder-name {
-    display: inline-block;
-    font-family: var(--serif);
-    font-style: italic;
-    font-weight: 400;
-    font-size: clamp(3rem, 6vw, 5.5rem);
-    color: var(--text);
-    line-height: 0.95;
-    letter-spacing: -0.025em;
-  }
-  .founder-name .dot { color: var(--orange); font-style: normal; }
   .about-stat .num {
     font-family: var(--serif);
     font-size: clamp(3rem, 4.5vw, 4.5rem);
@@ -1196,9 +1288,9 @@
 
   /* ────── RESPONSIVE ────── */
   @media (max-width: 960px) {
-    .nav { padding: 1.25rem 1.5rem; }
-    .nav.scrolled { padding: 0.85rem 1.5rem; }
-    .nav-links { display: none; }
+    .nav { padding: 1.25rem 0; }
+    .nav.scrolled { padding: 0.85rem 0; }
+    .nav-links, .nav-cta { display: none; }
     .nav-toggle {
       display: inline-flex;
       flex-direction: column;
@@ -1215,26 +1307,29 @@
     .nav.scrolled .logo-img { height: 34px; }
     .hero {
       grid-template-columns: 1fr;
-      padding: 7rem 1.5rem 3rem;
+      padding: 7rem var(--gutter) 3rem;
     }
     .hero-content { padding-left: 0; }
     .hero-stage { height: 56vh; min-height: 380px; }
     .scroll-cue { left: 1.5rem; bottom: 1.5rem; }
     .stage-index { display: none; }
-    .section { padding: 6rem 1.5rem; }
-    .foundation, .transform { grid-template-columns: 1fr; gap: 2rem; }
-    .foundation-stage, .transform-stage { height: 50vh; min-height: 360px; }
+    .section { padding: 6rem var(--gutter); }
+    .foundation { grid-template-columns: 1fr; gap: 2rem; }
+    .foundation-stage { height: 50vh; min-height: 360px; }
+    .projects-head { grid-template-columns: 1fr; gap: 1.5rem; }
+    .project-feature { grid-template-columns: 1fr; gap: 2rem; margin-bottom: 4rem; }
+    .project-grid { grid-template-columns: repeat(2, 1fr); gap: 2rem 1.4rem; }
+    .project-specs { grid-template-columns: 1fr 1fr; }
     .mentor-grid { grid-template-columns: 1fr; gap: 3rem; }
-    .portfolio-head { flex-direction: column; align-items: flex-start; }
     .balance-words { padding: 0 4%; }
-    footer { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+    .footer-inner { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
 
-    .about-body, .founder-strip, .contact-grid, .contact-head { grid-template-columns: 1fr; gap: 2.5rem; }
-    .founder-name-wrap { text-align: left; }
-    .about-year { position: static; margin-bottom: 1rem; display: inline-flex; }
-    .about-statement { padding-bottom: 3rem; }
-    .about-body { padding: 3rem 0; }
-    .founder-strip { padding-top: 3rem; }
+    .about-grid, .contact-grid, .contact-head { grid-template-columns: 1fr; gap: 2rem; }
+    .about-side { align-items: flex-start; text-align: left; }
+    .about-sig { text-align: left; }
+    .about-sig::before { left: 0; right: auto; }
+    .about-metrics { grid-template-columns: repeat(2, 1fr); gap: 1.5rem 2rem; }
+    .about { gap: 3rem; padding-top: 5rem; padding-bottom: 4rem; }
     .about-stats { grid-template-columns: 1fr 1fr; gap: 1.4rem 2rem; }
     .software-grid { grid-template-columns: repeat(2, 1fr); }
     .software-item:nth-child(4n) { border-right: 1px solid rgba(26,24,22,0.14); }
@@ -1251,17 +1346,24 @@
 
 <!-- ════════════════ NAV ════════════════ -->
 <header class="nav" id="nav">
-  <a href="#hero" class="logo logo-img-wrap" aria-label="Imagenius Edu Studio">
-    <img src="Imagenius.jpg-removebg-preview.png" alt="Imagenius Edu Studio" class="logo-img"/>
-  </a>
-  <nav class="nav-links">
-    <a href="#about">About</a>
-    <a href="#software">Software</a>
-    <a href="#portfolio">Portfolio</a>
-    <a href="#testimonials">Testimonials</a>
-    <a href="#contact">Contact</a>
-  </nav>
-  <button class="nav-toggle" aria-label="Menu"><span></span><span></span></button>
+  <div class="nav-inner">
+    <a href="#hero" class="logo logo-img-wrap" aria-label="Imagenius Edu Studio">
+      <img src="Imagenius.jpg-removebg-preview.png" alt="Imagenius Edu Studio" class="logo-img"/>
+    </a>
+    <div class="nav-right">
+      <nav class="nav-links">
+        <a href="#about">About</a>
+        <a href="#software">Software</a>
+        <a href="#projects">Projects</a>
+        <a href="#testimonials">Testimonials</a>
+      </nav>
+      <a href="#contact" class="nav-cta">
+        Contact
+        <svg viewBox="0 0 22 8" fill="none"><path d="M0 4 H20 M16 1 L20 4 L16 7" stroke="currentColor" stroke-width="1"/></svg>
+      </a>
+    </div>
+    <button class="nav-toggle" aria-label="Menu"><span></span><span></span></button>
+  </div>
 </header>
 
 <!-- ════════════════ HERO ════════════════ -->
@@ -1270,7 +1372,7 @@
   <div class="hero-content">
     <div class="hero-eyebrow">An Institute of Interior Design — Est. 2018</div>
     <h1 class="hero-title">
-      <span class="hero-word">imagine<span class="accent">.</span></span>
+      <span class="hero-word">imagine<span class="accent" id="heroPeriod">.</span></span>
     </h1>
     <p class="hero-sub">Where imagination becomes interior — the craft of turning a single thought into a finished room.</p>
 
@@ -1359,62 +1461,44 @@
         </radialGradient>
       </defs>
     </svg>
-
-    <!-- The travelling dot -->
-    <div class="traveler" id="heroDot" style="opacity:0;"></div>
   </div>
+
+  <!-- The travelling dot — lives at the .hero level so it can move from the title period to the lamp -->
+  <div class="traveler" id="heroDot" style="opacity:0;"></div>
 
 
 </section>
 
 <!-- ════════════════ 01 — ABOUT ════════════════ -->
 <section class="section about" id="about">
+  <div class="about-grid">
 
-  <!-- STATEMENT -->
-  <div class="about-statement">
-    <div class="eyebrow"><span class="num">01</span> About — the studio</div>
-    <h2 class="section-title">A workshop for <em>ideas</em><br/>that become rooms.</h2>
-    <span class="about-year">Est. 2008</span>
+    <!-- Title (left, asymmetric) -->
+    <div class="about-title">
+      <div class="eyebrow"><span class="num">01</span> About</div>
+      <h2>A workshop for <em>ideas</em><br/>that become rooms.</h2>
+    </div>
+
+    <!-- Lead + signature (right, narrow) -->
+    <div class="about-side">
+      <p>A small institute teaching the craft of interior design — space, material, light, and the quiet hours behind a finished room.</p>
+
+      <div class="about-sig">
+        <span class="sig-label">Founded &amp; led by</span>
+        <span class="sig-name">Deep Rajpara<span>.</span></span>
+        <span class="sig-role">Principal · 16+ years in practice</span>
+      </div>
+    </div>
+
   </div>
 
-  <!-- SUBSTANCE -->
-  <div class="about-body">
-    <div class="about-lead">
-      <p>Imagenius is a small institute teaching the craft of interior design — space, material, light, and the quiet hours behind a finished room.</p>
-      <p>We design our cohorts the way a good studio designs a room: with restraint, intention, and care for how people actually live in it.</p>
-    </div>
-
-    <div class="about-stats">
-      <div class="about-stat">
-        <div class="num">16<em>+</em></div>
-        <span class="lbl">Years of practice</span>
-      </div>
-      <div class="about-stat">
-        <div class="num">1200<em>+</em></div>
-        <span class="lbl">Students trained</span>
-      </div>
-      <div class="about-stat">
-        <div class="num">18</div>
-        <span class="lbl">Practising mentors</span>
-      </div>
-      <div class="about-stat">
-        <div class="num">06</div>
-        <span class="lbl">Cohorts shipped</span>
-      </div>
-    </div>
+  <!-- Inline metrics ribbon -->
+  <div class="about-metrics">
+    <div><span class="num">16<em>+</em></span><span class="lbl">Years</span></div>
+    <div><span class="num">1200<em>+</em></span><span class="lbl">Students</span></div>
+    <div><span class="num">18</span><span class="lbl">Mentors</span></div>
+    <div><span class="num">06</span><span class="lbl">Cohorts</span></div>
   </div>
-
-  <!-- SIGNATURE -->
-  <div class="founder-strip">
-    <div class="founder-meta">
-      <span class="founder-label">Founded &amp; led by</span>
-      <span class="founder-role">Principal · 16+ years in interior design practice</span>
-    </div>
-    <div class="founder-name-wrap">
-      <span class="founder-name">Deep Rajpara<span class="dot">.</span></span>
-    </div>
-  </div>
-
 </section>
 
 <!-- ════════════════ 02 — FOUNDATION ════════════════ -->
@@ -1584,175 +1668,200 @@
 
 </section>
 
-<!-- ════════════════ 05 — TRANSFORMATION ════════════════ -->
-<section class="section transform" id="transformation">
-  <div class="transform-copy">
-    <div class="eyebrow"><span class="num">05</span> Practice — drawing into being</div>
-    <h2 class="section-title">From <em>blueprint</em> to belonging.</h2>
-    <p>Students learn to translate a thin line into a lived room — light, texture, scale, and stillness.</p>
-  </div>
+<!-- ════════════════ 05 — PROJECTS GALLERY ════════════════ -->
+<section class="section projects" id="projects">
 
-  <div class="transform-stage">
-    <svg viewBox="0 0 600 600" preserveAspectRatio="xMidYMid meet" id="blueprintSvg">
-      <!-- Outer room shell -->
-      <rect class="stroke" x="60" y="60" width="480" height="480"/>
-
-      <!-- Door opening on left -->
-      <line class="stroke" x1="60" y1="200" x2="60" y2="280" stroke="var(--bg)" stroke-width="3"/>
-      <path class="stroke-soft" d="M 60 280 Q 140 280 140 200" />
-
-      <!-- Window markers (top wall) -->
-      <line class="stroke" x1="200" y1="60" x2="280" y2="60" stroke="var(--bg)" stroke-width="3"/>
-      <line class="stroke" x1="320" y1="60" x2="400" y2="60" stroke="var(--bg)" stroke-width="3"/>
-      <line class="stroke-soft" x1="200" y1="56" x2="280" y2="56"/>
-      <line class="stroke-soft" x1="320" y1="56" x2="400" y2="56"/>
-
-      <!-- Furniture: sofa -->
-      <g class="furn" id="furnSofa" opacity="0">
-        <rect class="stroke" x="100" y="380" width="160" height="60" rx="6"/>
-        <line class="stroke-soft" x1="100" y1="400" x2="260" y2="400"/>
-        <line class="stroke-soft" x1="130" y1="380" x2="130" y2="440"/>
-        <line class="stroke-soft" x1="230" y1="380" x2="230" y2="440"/>
-      </g>
-
-      <!-- Furniture: coffee table -->
-      <g class="furn" id="furnTable" opacity="0">
-        <rect class="stroke" x="130" y="300" width="100" height="50" rx="2"/>
-      </g>
-
-      <!-- Furniture: bed/large rect right -->
-      <g class="furn" id="furnBed" opacity="0">
-        <rect class="stroke" x="340" y="330" width="160" height="160" rx="4"/>
-        <line class="stroke-soft" x1="340" y1="370" x2="500" y2="370"/>
-      </g>
-
-      <!-- Plant -->
-      <g class="furn" id="furnPlant" opacity="0">
-        <circle class="stroke" cx="450" cy="140" r="22"/>
-        <line class="stroke" x1="450" y1="162" x2="450" y2="200"/>
-      </g>
-
-      <!-- Rug -->
-      <g class="furn" id="furnRug" opacity="0">
-        <rect class="stroke-soft" x="90" y="290" width="200" height="170" stroke-dasharray="3 4"/>
-      </g>
-
-      <!-- Path the dot follows around the room (blueprint trace) -->
-      <path id="blueprintPath"
-            d="M 60 240
-               L 140 240
-               L 140 460
-               L 300 460
-               L 300 350
-               L 500 350
-               L 500 140
-               L 300 140
-               L 300 240
-               L 540 240"
-            stroke="var(--orange)" stroke-width="1" fill="none"
-            vector-effect="non-scaling-stroke"
-            stroke-dasharray="800" stroke-dashoffset="800"
-            opacity="0.7"/>
-
-      <!-- Dot -->
-      <circle id="blueprintDot" r="6" fill="var(--orange)" cx="60" cy="240"/>
-    </svg>
-  </div>
-
-</section>
-
-<!-- ════════════════ 05 — PORTFOLIO ════════════════ -->
-<section class="section portfolio" id="portfolio">
-  <div class="portfolio-head">
+  <div class="projects-head">
     <div>
-      <div class="eyebrow"><span class="num">06</span> Showcase — student journeys</div>
-      <h2 class="section-title">Imagined. <em>Then</em><br/>realized.</h2>
+      <div class="eyebrow"><span class="num">05</span> Projects — selected works</div>
+      <h2 class="section-title">Rooms we have <em>made</em>.</h2>
     </div>
-    <p class="meta">A selection of cohort projects — residential, retail, hospitality, and one quiet chapel in a forest.</p>
+    <div class="projects-filter" id="projectsFilter">
+      <button class="active" data-cat="all">All</button>
+      <button data-cat="residential">Residential</button>
+      <button data-cat="commercial">Commercial</button>
+      <button data-cat="hospitality">Hospitality</button>
+    </div>
   </div>
 
-  <div class="gallery" id="gallery">
-    <!-- 6 minimal architectural illustrations as portfolio "thumbnails" -->
-    <div class="work">
-      <div class="work-frame">
-        <svg viewBox="0 0 400 500">
-          <rect class="stroke" x="40" y="60" width="320" height="380"/>
-          <rect class="fill-purple" x="80" y="280" width="120" height="80"/>
-          <rect class="stroke" x="80" y="280" width="120" height="80"/>
-          <line class="stroke" x1="220" y1="280" x2="320" y2="280"/>
-          <line class="stroke" x1="40" y1="200" x2="360" y2="200"/>
-          <circle cx="320" cy="120" r="8" fill="var(--orange)"/>
-          <line class="stroke" x1="40" y1="440" x2="360" y2="440"/>
-        </svg>
-      </div>
-      <div class="work-meta"><span class="num">01</span><span class="title">Quiet House on Stilts</span><span class="tag">Residential</span></div>
+  <!-- Featured project -->
+  <div class="project-feature" data-cat="residential">
+    <div class="project-feature-img">
+      <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
+        <rect x="0" y="0" width="800" height="600" fill="#F5EFE6"/>
+        <rect x="0" y="0" width="380" height="440" fill="rgba(91,26,120,0.10)"/>
+        <rect x="0" y="440" width="800" height="160" fill="rgba(0,0,0,0.04)"/>
+        <line x1="0" y1="440" x2="800" y2="440" stroke="#1A1816" stroke-width="1"/>
+        <!-- Window arch right -->
+        <path d="M 540 440 L 540 180 Q 540 100 620 100 Q 700 100 700 180 L 700 440" stroke="#1A1816" stroke-width="1" fill="none"/>
+        <line x1="620" y1="440" x2="620" y2="120" stroke="#1A1816" stroke-width="0.6" opacity="0.4"/>
+        <line x1="540" y1="280" x2="700" y2="280" stroke="#1A1816" stroke-width="0.6" opacity="0.4"/>
+        <!-- Sofa -->
+        <path d="M 80 440 L 80 360 Q 80 340 100 340 L 320 340 Q 340 340 340 360 L 340 440" stroke="#1A1816" stroke-width="1" fill="#F5EFE6"/>
+        <line x1="80" y1="380" x2="340" y2="380" stroke="#1A1816" stroke-width="0.6" opacity="0.4"/>
+        <line x1="160" y1="340" x2="160" y2="440" stroke="#1A1816" stroke-width="0.6" opacity="0.4"/>
+        <line x1="260" y1="340" x2="260" y2="440" stroke="#1A1816" stroke-width="0.6" opacity="0.4"/>
+        <!-- Coffee table -->
+        <rect x="180" y="460" width="120" height="36" stroke="#1A1816" stroke-width="1" fill="rgba(243,156,18,0.12)"/>
+        <!-- Pendant -->
+        <line x1="450" y1="0" x2="450" y2="240" stroke="#1A1816" stroke-width="1"/>
+        <path d="M 420 240 L 480 240 L 470 280 L 430 280 Z" stroke="#1A1816" stroke-width="1" fill="#F5EFE6"/>
+        <circle cx="450" cy="295" r="6" fill="#E8902A"/>
+        <circle cx="450" cy="295" r="20" fill="rgba(232,144,42,0.18)"/>
+      </svg>
     </div>
+    <div class="project-feature-meta">
+      <span class="num">Project / 01</span>
+      <h3>The Quiet House</h3>
+      <p>A 3-bedroom residence in the hills — built around a single old mango tree, with rooms that follow the path of the morning light.</p>
+      <ul class="project-specs">
+        <li><span>Type</span><strong>Residential</strong></li>
+        <li><span>Year</span><strong>2024</strong></li>
+        <li><span>Location</span><strong>Surat, IN</strong></li>
+        <li><span>Area</span><strong>2,400 sq.ft</strong></li>
+      </ul>
+    </div>
+  </div>
 
-    <div class="work">
-      <div class="work-frame">
-        <svg viewBox="0 0 400 500">
-          <path class="stroke" d="M 40 440 L 40 200 L 200 80 L 360 200 L 360 440 Z"/>
-          <rect class="fill-orange" x="160" y="280" width="80" height="160"/>
-          <rect class="stroke" x="160" y="280" width="80" height="160"/>
-          <line class="stroke-soft" stroke="var(--line)" x1="40" y1="440" x2="360" y2="440"/>
-        </svg>
-      </div>
-      <div class="work-meta"><span class="num">02</span><span class="title">Forest Chapel</span><span class="tag">Sacred</span></div>
-    </div>
+  <!-- Project grid -->
+  <div class="project-grid" id="projectGrid">
 
-    <div class="work">
-      <div class="work-frame">
-        <svg viewBox="0 0 400 500">
-          <rect class="stroke" x="40" y="80" width="320" height="360"/>
-          <rect class="fill-purple" x="40" y="80" width="160" height="180"/>
-          <line class="stroke" x1="200" y1="80" x2="200" y2="440"/>
-          <line class="stroke" x1="40" y1="260" x2="360" y2="260"/>
-          <circle cx="280" cy="170" r="40" fill="none" stroke="var(--line)" stroke-width="1"/>
-          <circle cx="280" cy="170" r="6" fill="var(--orange)"/>
+    <article class="project-card" data-cat="commercial">
+      <div class="project-img">
+        <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice">
+          <rect width="400" height="500" fill="#F1ECE3"/>
+          <rect x="0" y="0" width="400" height="350" fill="rgba(243,156,18,0.10)"/>
+          <line x1="0" y1="350" x2="400" y2="350" stroke="#1A1816"/>
+          <!-- Storefront columns -->
+          <line x1="60" y1="80" x2="60" y2="350" stroke="#1A1816"/>
+          <line x1="200" y1="80" x2="200" y2="350" stroke="#1A1816"/>
+          <line x1="340" y1="80" x2="340" y2="350" stroke="#1A1816"/>
+          <line x1="60" y1="80" x2="340" y2="80" stroke="#1A1816"/>
+          <!-- Display blocks -->
+          <rect x="80" y="200" width="100" height="150" fill="rgba(91,26,120,0.20)" stroke="#1A1816"/>
+          <rect x="220" y="240" width="100" height="110" fill="none" stroke="#1A1816"/>
+          <circle cx="270" cy="295" r="20" fill="rgba(232,144,42,0.4)"/>
         </svg>
       </div>
-      <div class="work-meta"><span class="num">03</span><span class="title">Atelier Saigon</span><span class="tag">Retail</span></div>
-    </div>
+      <div class="project-meta">
+        <span class="num">02</span>
+        <h4>Atelier Saigon</h4>
+        <span class="tag">Commercial · 2024 · HCMC</span>
+      </div>
+    </article>
 
-    <div class="work">
-      <div class="work-frame">
-        <svg viewBox="0 0 400 500">
-          <rect class="stroke" x="40" y="60" width="320" height="380"/>
-          <line class="stroke" x1="40" y1="180" x2="360" y2="180"/>
-          <line class="stroke" x1="40" y1="320" x2="360" y2="320"/>
-          <rect class="fill-orange" x="60" y="200" width="100" height="100"/>
-          <rect class="stroke" x="180" y="200" width="160" height="100"/>
-          <line class="stroke-soft" stroke="var(--line)" x1="60" y1="350" x2="340" y2="350"/>
-          <line class="stroke-soft" stroke="var(--line)" x1="60" y1="380" x2="280" y2="380"/>
+    <article class="project-card" data-cat="hospitality">
+      <div class="project-img">
+        <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice">
+          <rect width="400" height="500" fill="#EFE9DF"/>
+          <path d="M 0 360 L 0 160 L 200 60 L 400 160 L 400 360 Z" fill="rgba(91,26,120,0.08)" stroke="#1A1816"/>
+          <line x1="0" y1="360" x2="400" y2="360" stroke="#1A1816"/>
+          <rect x="160" y="220" width="80" height="140" fill="rgba(232,144,42,0.30)" stroke="#1A1816"/>
+          <line x1="200" y1="220" x2="200" y2="360" stroke="#1A1816" stroke-width="0.6" opacity="0.4"/>
+          <circle cx="200" cy="180" r="6" fill="#E8902A"/>
         </svg>
       </div>
-      <div class="work-meta"><span class="num">04</span><span class="title">Café Mara</span><span class="tag">Hospitality</span></div>
-    </div>
+      <div class="project-meta">
+        <span class="num">03</span>
+        <h4>Forest Chapel</h4>
+        <span class="tag">Hospitality · 2023 · Coorg</span>
+      </div>
+    </article>
 
-    <div class="work">
-      <div class="work-frame">
-        <svg viewBox="0 0 400 500">
-          <path class="stroke" d="M 60 440 L 60 120 Q 200 60 340 120 L 340 440 Z"/>
-          <rect class="fill-purple" x="170" y="240" width="60" height="200"/>
-          <rect class="stroke" x="170" y="240" width="60" height="200"/>
-          <circle cx="200" cy="180" r="6" fill="var(--orange)"/>
+    <article class="project-card" data-cat="residential">
+      <div class="project-img">
+        <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice">
+          <rect width="400" height="500" fill="#F2EDE4"/>
+          <rect x="0" y="0" width="170" height="370" fill="rgba(91,26,120,0.12)"/>
+          <line x1="0" y1="370" x2="400" y2="370" stroke="#1A1816"/>
+          <!-- Bed -->
+          <rect x="80" y="240" width="240" height="130" fill="#F2EDE4" stroke="#1A1816"/>
+          <line x1="80" y1="280" x2="320" y2="280" stroke="#1A1816" stroke-width="0.6" opacity="0.5"/>
+          <!-- Headboard accent -->
+          <rect x="80" y="200" width="240" height="40" fill="rgba(232,144,42,0.25)" stroke="#1A1816"/>
+          <!-- Side table -->
+          <rect x="40" y="300" width="40" height="70" fill="none" stroke="#1A1816"/>
+          <circle cx="60" cy="290" r="6" fill="#E8902A"/>
         </svg>
       </div>
-      <div class="work-meta"><span class="num">05</span><span class="title">Arch House</span><span class="tag">Residential</span></div>
-    </div>
+      <div class="project-meta">
+        <span class="num">04</span>
+        <h4>Bedroom 09</h4>
+        <span class="tag">Residential · 2024 · Surat</span>
+      </div>
+    </article>
 
-    <div class="work">
-      <div class="work-frame">
-        <svg viewBox="0 0 400 500">
-          <rect class="stroke" x="40" y="60" width="320" height="380"/>
-          <line class="stroke" x1="40" y1="60" x2="360" y2="440"/>
-          <line class="stroke" x1="360" y1="60" x2="40" y2="440"/>
-          <rect class="fill-orange" x="160" y="200" width="80" height="100"/>
-          <rect class="stroke" x="160" y="200" width="80" height="100"/>
+    <article class="project-card" data-cat="hospitality">
+      <div class="project-img">
+        <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice">
+          <rect width="400" height="500" fill="#F0EAE0"/>
+          <line x1="0" y1="370" x2="400" y2="370" stroke="#1A1816"/>
+          <!-- Bar / counter -->
+          <rect x="40" y="280" width="320" height="90" fill="rgba(91,26,120,0.10)" stroke="#1A1816"/>
+          <line x1="40" y1="310" x2="360" y2="310" stroke="#1A1816" stroke-width="0.6" opacity="0.5"/>
+          <!-- Pendant lamps -->
+          <line x1="120" y1="100" x2="120" y2="200" stroke="#1A1816"/>
+          <path d="M 105 200 L 135 200 L 130 220 L 110 220 Z" fill="rgba(232,144,42,0.30)" stroke="#1A1816"/>
+          <line x1="200" y1="100" x2="200" y2="180" stroke="#1A1816"/>
+          <path d="M 185 180 L 215 180 L 210 200 L 190 200 Z" fill="rgba(232,144,42,0.30)" stroke="#1A1816"/>
+          <line x1="280" y1="100" x2="280" y2="200" stroke="#1A1816"/>
+          <path d="M 265 200 L 295 200 L 290 220 L 270 220 Z" fill="rgba(232,144,42,0.30)" stroke="#1A1816"/>
+          <!-- Stools -->
+          <circle cx="100" cy="380" r="14" fill="none" stroke="#1A1816"/>
+          <circle cx="200" cy="380" r="14" fill="none" stroke="#1A1816"/>
+          <circle cx="300" cy="380" r="14" fill="none" stroke="#1A1816"/>
         </svg>
       </div>
-      <div class="work-meta"><span class="num">06</span><span class="title">Pavilion No. 11</span><span class="tag">Public</span></div>
-    </div>
+      <div class="project-meta">
+        <span class="num">05</span>
+        <h4>Café Mara</h4>
+        <span class="tag">Hospitality · 2023 · Bengaluru</span>
+      </div>
+    </article>
+
+    <article class="project-card" data-cat="commercial">
+      <div class="project-img">
+        <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice">
+          <rect width="400" height="500" fill="#F2EDE4"/>
+          <rect x="20" y="60" width="360" height="60" fill="rgba(91,26,120,0.10)" stroke="#1A1816"/>
+          <line x1="0" y1="370" x2="400" y2="370" stroke="#1A1816"/>
+          <!-- Desks -->
+          <rect x="40" y="240" width="140" height="40" fill="none" stroke="#1A1816"/>
+          <rect x="220" y="240" width="140" height="40" fill="rgba(232,144,42,0.25)" stroke="#1A1816"/>
+          <!-- Chairs -->
+          <rect x="80" y="290" width="60" height="50" fill="none" stroke="#1A1816"/>
+          <rect x="260" y="290" width="60" height="50" fill="none" stroke="#1A1816"/>
+          <!-- Shelving -->
+          <line x1="40" y1="160" x2="360" y2="160" stroke="#1A1816"/>
+          <line x1="40" y1="190" x2="360" y2="190" stroke="#1A1816"/>
+        </svg>
+      </div>
+      <div class="project-meta">
+        <span class="num">06</span>
+        <h4>Studio Verde</h4>
+        <span class="tag">Commercial · 2024 · Mumbai</span>
+      </div>
+    </article>
+
+    <article class="project-card" data-cat="residential">
+      <div class="project-img">
+        <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice">
+          <rect width="400" height="500" fill="#EFE9DF"/>
+          <path d="M 0 370 L 0 160 Q 200 80 400 160 L 400 370 Z" fill="rgba(91,26,120,0.10)" stroke="#1A1816"/>
+          <line x1="0" y1="370" x2="400" y2="370" stroke="#1A1816"/>
+          <!-- Arch entry -->
+          <path d="M 160 370 L 160 220 Q 160 170 200 170 Q 240 170 240 220 L 240 370" fill="rgba(232,144,42,0.25)" stroke="#1A1816"/>
+          <line x1="200" y1="370" x2="200" y2="180" stroke="#1A1816" stroke-width="0.6" opacity="0.4"/>
+          <circle cx="200" cy="280" r="4" fill="#E8902A"/>
+        </svg>
+      </div>
+      <div class="project-meta">
+        <span class="num">07</span>
+        <h4>Arch House</h4>
+        <span class="tag">Residential · 2022 · Goa</span>
+      </div>
+    </article>
+
   </div>
 
 </section>
@@ -1921,13 +2030,15 @@
 </section>
 
 <footer>
-  <div class="f-brand">imagenius<span>.</span> edu studio</div>
-  <ul>
-    <li>© 2026</li>
-    <li>Surat · Gujarat</li>
-    <li><a href="mailto:imageniusedustudio@gmail.com">imageniusedustudio@gmail.com</a></li>
-    <li><a href="tel:+919035676270">+91 90356 76270</a></li>
-  </ul>
+  <div class="footer-inner">
+    <div class="f-brand">imagenius<span>.</span> edu studio</div>
+    <ul>
+      <li>© 2026</li>
+      <li>Surat · Gujarat</li>
+      <li><a href="mailto:imageniusedustudio@gmail.com">imageniusedustudio@gmail.com</a></li>
+      <li><a href="tel:+919035676270">+91 90356 76270</a></li>
+    </ul>
+  </div>
 </footer>
 
 <!-- ════════════════ SCRIPTS ════════════════ -->
@@ -1947,141 +2058,126 @@
     }
   });
 
-  /* ───── HERO entrance ───── */
-  gsap.set('.hero-eyebrow, .hero-word, .hero-sub, .hero-cta', { opacity: 0, y: 24 });
+  /* ───── HERO entrance — fast, so the journey starts almost instantly ───── */
+  gsap.set('.hero-eyebrow, .hero-word, .hero-sub, .hero-cta', { opacity: 0, y: 16 });
   const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-  heroTl.to('.hero-eyebrow', { opacity: 1, y: 0, duration: 1.0 }, 0.2)
-        .to('.hero-word', { opacity: 1, y: 0, duration: 1.4 }, 0.4)
-        .to('.hero-sub', { opacity: 1, y: 0, duration: 1.0 }, 0.9)
-        .to('.hero-cta', { opacity: 1, y: 0, duration: 0.9 }, 1.2);
+  heroTl.to('.hero-eyebrow', { opacity: 1, y: 0, duration: 0.5 }, 0)
+        .to('.hero-word',    { opacity: 1, y: 0, duration: 0.55 }, 0.05)
+        .to('.hero-sub',     { opacity: 1, y: 0, duration: 0.5 },  0.35)
+        .to('.hero-cta',     { opacity: 1, y: 0, duration: 0.45 }, 0.5);
 
-  /* ───── HERO line-draw + dot lands as lamp bulb ───── */
+  /* ───── HERO journey ─────
+     The dot IS the period of "imagine." It appears as the period when the
+     headline reveals, lingers there while the room sketch draws itself,
+     then flies from the title to the pendant lamp where it becomes the bulb.
+  */
   function runHeroJourney() {
-    const stage = document.getElementById('heroStage');
-    const svg = document.getElementById('heroSvg');
-    const dot = document.getElementById('heroDot');
-    const beams = document.getElementById('lightBeams');
-    const lampGlow = document.getElementById('lampGlow');
+    const hero      = document.getElementById('hero');
+    const svg       = document.getElementById('heroSvg');
+    const dot       = document.getElementById('heroDot');
+    const period    = document.getElementById('heroPeriod');
+    const beams     = document.getElementById('lightBeams');
+    const lampGlow  = document.getElementById('lampGlow');
 
-    if (!stage || !svg || !dot) return;
+    if (!hero || !svg || !dot || !period) return;
 
-    // 1. Prepare every .draw element with stroke-dasharray = its own length
-    const drawables = svg.querySelectorAll('.draw');
-    drawables.forEach((el) => {
-      const len = (el.getTotalLength ? el.getTotalLength() : 400);
-      el.style.strokeDasharray = len;
+    // Prep every .draw line for stroke-dashoffset reveal
+    svg.querySelectorAll('.draw').forEach((el) => {
+      const len = el.getTotalLength ? el.getTotalLength() : 400;
+      el.style.strokeDasharray  = len;
       el.style.strokeDashoffset = len;
     });
 
-    // 2. Compute the lamp bulb position in viewport coords
-    //    Lamp shade ends at y=285; bulb hangs just below at (160, 300).
-    function lampPositionInStage() {
-      const stageRect = stage.getBoundingClientRect();
-      const svgRect   = svg.getBoundingClientRect();
-      const scale = Math.min(svgRect.width / 600, svgRect.height / 700);
-      const offsetX = svgRect.left - stageRect.left + (svgRect.width  - 600 * scale) / 2;
-      const offsetY = svgRect.top  - stageRect.top  + (svgRect.height - 700 * scale) / 2;
+    // Position helpers — both relative to .hero (the dot's offsetParent)
+    function periodPos() {
+      const h = hero.getBoundingClientRect();
+      const p = period.getBoundingClientRect();
       return {
-        x: offsetX + 160 * scale,
-        y: offsetY + 300 * scale
+        x: p.left - h.left + p.width  / 2,
+        y: p.top  - h.top  + p.height * 0.78
       };
     }
+    function lampPos() {
+      const h = hero.getBoundingClientRect();
+      const r = svg.getBoundingClientRect();
+      const sc = Math.min(r.width / 600, r.height / 700);
+      const ox = r.left - h.left + (r.width  - 600 * sc) / 2;
+      const oy = r.top  - h.top  + (r.height - 700 * sc) / 2;
+      return { x: ox + 160 * sc, y: oy + 300 * sc };
+    }
 
-    const lamp = lampPositionInStage();
-    const stageRect = stage.getBoundingClientRect();
+    // Hero entrance reveals "imagine." by ~0.6s — start the journey right after
+    const tl = gsap.timeline({ delay: 0.7, defaults: { ease: 'power2.inOut' } });
 
-    // Dot starts top-left of stage
-    gsap.set(dot, {
-      x: -stageRect.width * 0.25,
-      y: stageRect.height * 0.10,
-      opacity: 0,
-      scale: 1
-    });
+    // 1. Place the dot at the period's location, then swap visibilities
+    tl.call(() => {
+      const p = periodPos();
+      gsap.set(dot, { x: p.x, y: p.y, opacity: 0, scale: 1 });
+    })
+    .to(period, { opacity: 0, duration: 0.45 }, '+=0.05')
+    .to(dot,    { opacity: 1, duration: 0.45 }, '<');
 
-    const tl = gsap.timeline({ delay: 1.4, defaults: { ease: 'power2.inOut' } });
-
-    // Sequence — draw the architectural sketch, then dot floats in
-    const drawOne = (sel, dur, at) => {
+    // 2. Sketch the room around the (now-stationary) dot
+    tl.addLabel('drawStart', '+=0.25');
+    const draw = (sel, dur, at) => {
       const el = svg.querySelector(sel);
-      if (!el) return;
-      tl.to(el, { strokeDashoffset: 0, duration: dur, ease: 'power1.inOut' }, at);
+      if (el) tl.to(el, { strokeDashoffset: 0, duration: dur, ease: 'power1.inOut' }, at);
     };
+    draw('#lineFloor',   0.9, 'drawStart');
+    draw('#lineWindow',  1.2, 'drawStart+=0.3');
+    draw('#lineCord',    0.7, 'drawStart+=0.8');
+    draw('#lineLamp',    0.6, 'drawStart+=1.4');
+    draw('#lineChair1',  1.1, 'drawStart+=1.1');
+    draw('#lineChair2',  0.9, 'drawStart+=1.8');
+    draw('#linePlant1',  0.4, 'drawStart+=2.0');
+    draw('#linePlant2',  0.3, 'drawStart+=2.2');
+    draw('#linePlant3',  0.3, 'drawStart+=2.3');
+    draw('#linePlant4',  0.5, 'drawStart+=2.4');
+    draw('#linePlant5',  0.7, 'drawStart+=2.6');
 
-    // Floor first — grounds the composition
-    drawOne('#lineFloor', 1.2, 0);
-    // Window arch
-    drawOne('#lineWindow', 1.6, 0.3);
-    // Pendant cord falls from ceiling
-    drawOne('#lineCord', 0.9, 0.9);
-    // Lamp shade
-    drawOne('#lineLamp', 0.7, 1.6);
-    // Armchair body, then backrest
-    drawOne('#lineChair1', 1.4, 1.3);
-    drawOne('#lineChair2', 1.1, 2.2);
-    // Side table + plant
-    drawOne('#linePlant1', 0.4, 2.4);
-    drawOne('#linePlant2', 0.3, 2.6);
-    drawOne('#linePlant3', 0.3, 2.7);
-    drawOne('#linePlant4', 0.6, 2.8);
-    drawOne('#linePlant5', 0.9, 3.1);
+    // 3. Dot leaves the title and travels to the pendant lamp
+    tl.to(dot, {
+      x: () => lampPos().x,
+      y: () => lampPos().y,
+      duration: 2.2,
+      ease: 'power3.inOut'
+    }, 'drawStart+=3.0');
 
-    // Dot fades in and floats toward lamp position
-    tl.to(dot, { opacity: 1, duration: 0.5 }, 2.0)
-      .to(dot, {
-        x: lamp.x,
-        y: lamp.y,
+    // 4. Bulb glow blooms + window light beams cast through
+    tl.to(lampGlow, { opacity: 1, duration: 1.0, ease: 'power2.out' }, '-=0.5')
+      .to(beams,    { opacity: 1, duration: 1.2, ease: 'power2.out' }, '-=1.0')
+      .to(lampGlow, {
+        opacity: 0.7,
+        scale: 1.08,
+        transformOrigin: '50% 50%',
+        transformBox: 'fill-box',
         duration: 2.4,
-        ease: 'power3.inOut'
-      }, 2.1)
-      // Dot settles (becomes the bulb) — scale slightly + soft glow
-      .to(dot, {
-        scale: 0.9,
-        boxShadow: '0 0 24px 6px rgba(243,156,18,0.5)',
-        duration: 0.6
-      }, '-=0.3')
-      // Lamp halo blooms
-      .to(lampGlow, { opacity: 1, duration: 1.2, ease: 'power2.out' }, '-=0.6')
-      // Light beams cast through window
-      .to(beams, { opacity: 1, duration: 1.4, ease: 'power2.out' }, '-=1.0');
-
-    // After lamp lights up, set up an ambient subtle breathing
-    tl.to(lampGlow, {
-      opacity: 0.7,
-      scale: 1.08,
-      transformOrigin: '50% 50%',
-      transformBox: 'fill-box',
-      duration: 2.4,
-      ease: 'sine.inOut',
-      repeat: -1,
-      yoyo: true
-    });
+        ease: 'sine.inOut',
+        repeat: -1,
+        yoyo: true
+      }, '+=0.4');
   }
 
-  // Run after fonts/layout settle
-  window.addEventListener('load', () => {
-    // tiny delay so fonts paint before measuring
-    setTimeout(runHeroJourney, 60);
-  });
+  // Fire immediately on page load — wait only for fonts to settle so the period position is accurate
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(runHeroJourney);
+  } else {
+    runHeroJourney();
+  }
 
-  // Recompute lamp position on resize
+  // On resize, snap dot to the lamp (assuming initial animation already finished)
   window.addEventListener('resize', () => {
-    // Re-trigger only if hero is in view to avoid jank
-    const heroEl = document.getElementById('hero');
-    if (!heroEl) return;
-    const rect = heroEl.getBoundingClientRect();
-    if (rect.bottom > 0 && rect.top < window.innerHeight) {
-      // soft restart of the dot landing only
-      const dot = document.getElementById('heroDot');
-      const stage = document.getElementById('heroStage');
-      const svg = document.getElementById('heroSvg');
-      if (!dot || !stage || !svg) return;
-      const stageRect = stage.getBoundingClientRect();
-      const svgRect = svg.getBoundingClientRect();
-      const scale = Math.min(svgRect.width / 600, svgRect.height / 700);
-      const offsetX = svgRect.left - stageRect.left + (svgRect.width  - 600 * scale) / 2;
-      const offsetY = svgRect.top  - stageRect.top  + (svgRect.height - 700 * scale) / 2;
-      gsap.set(dot, { x: offsetX + 160 * scale, y: offsetY + 300 * scale });
-    }
+    const hero = document.getElementById('hero');
+    const dot  = document.getElementById('heroDot');
+    const svg  = document.getElementById('heroSvg');
+    if (!hero || !dot || !svg) return;
+    const heroRect = hero.getBoundingClientRect();
+    if (heroRect.bottom < 0 || heroRect.top > window.innerHeight) return;
+    const r  = svg.getBoundingClientRect();
+    const sc = Math.min(r.width / 600, r.height / 700);
+    const ox = r.left - heroRect.left + (r.width  - 600 * sc) / 2;
+    const oy = r.top  - heroRect.top  + (r.height - 700 * sc) / 2;
+    gsap.set(dot, { x: ox + 160 * sc, y: oy + 300 * sc });
   });
 
   /* ───── SECTION 02 — Staircase dot ───── */
@@ -2150,65 +2246,60 @@
     }
   });
 
-  /* ───── SECTION 04 — Blueprint trace ───── */
-  const blueprintPath = document.getElementById('blueprintPath');
-  if (blueprintPath) {
-    const len = blueprintPath.getTotalLength();
-    blueprintPath.setAttribute('stroke-dasharray', len);
-    blueprintPath.setAttribute('stroke-dashoffset', len);
+  /* ───── SECTION 05 — Projects gallery: filter + reveal ───── */
+  const filterBar = document.getElementById('projectsFilter');
+  const projectGrid = document.getElementById('projectGrid');
+  const featureBlock = document.querySelector('.project-feature');
 
-    gsap.to(blueprintPath, {
-      strokeDashoffset: 0,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: '#transformation',
-        start: 'top 70%',
-        end: 'bottom 30%',
-        scrub: 0.6
-      }
-    });
+  if (filterBar && projectGrid) {
+    filterBar.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-cat]');
+      if (!btn) return;
+      const cat = btn.dataset.cat;
 
-    gsap.to('#blueprintDot', {
-      motionPath: {
-        path: '#blueprintPath',
-        align: '#blueprintPath',
-        alignOrigin: [0.5, 0.5],
-        autoRotate: false
-      },
-      ease: 'none',
-      scrollTrigger: {
-        trigger: '#transformation',
-        start: 'top 70%',
-        end: 'bottom 30%',
-        scrub: 0.6
-      }
-    });
+      filterBar.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === btn));
 
-    // Furniture appears in sequence as dot traces
-    const furnSeq = ['#furnRug', '#furnSofa', '#furnTable', '#furnBed', '#furnPlant'];
-    furnSeq.forEach((sel, i) => {
-      gsap.to(sel, {
-        opacity: 1,
-        duration: 0.4,
-        scrollTrigger: {
-          trigger: '#transformation',
-          start: `top+=${i * 80} 60%`,
-          toggleActions: 'play none none reverse'
-        }
+      const cards = projectGrid.querySelectorAll('.project-card');
+      cards.forEach((card) => {
+        const match = (cat === 'all') || (card.dataset.cat === cat);
+        gsap.to(card, {
+          opacity: match ? 1 : 0,
+          y: match ? 0 : 12,
+          duration: 0.5,
+          ease: 'power2.out',
+          onStart: () => { if (match) card.style.display = ''; },
+          onComplete: () => { if (!match) card.style.display = 'none'; }
+        });
       });
+
+      if (featureBlock) {
+        const fMatch = (cat === 'all') || (featureBlock.dataset.cat === cat);
+        gsap.to(featureBlock, {
+          opacity: fMatch ? 1 : 0,
+          y: fMatch ? 0 : 12,
+          duration: 0.5,
+          ease: 'power2.out',
+          onComplete: () => { featureBlock.style.display = fMatch ? '' : 'none'; }
+        });
+      }
     });
   }
 
-  /* ───── SECTION 05 — Portfolio horizontal scroll-in ───── */
-  gsap.from('.work', {
-    opacity: 0,
-    y: 50,
-    duration: 1,
-    stagger: 0.12,
-    ease: 'power2.out',
-    scrollTrigger: { trigger: '.gallery', start: 'top 75%' }
+  // Reveal on scroll
+  gsap.from('.project-feature', {
+    opacity: 0, y: 40, duration: 1.2, ease: 'power3.out',
+    scrollTrigger: { trigger: '.project-feature', start: 'top 80%' }
+  });
+  gsap.from('.project-card', {
+    opacity: 0, y: 30, stagger: 0.1, duration: 0.9, ease: 'power2.out',
+    scrollTrigger: { trigger: '.project-grid', start: 'top 80%' }
+  });
+  gsap.from('.projects-filter button', {
+    opacity: 0, y: 12, stagger: 0.06, duration: 0.6, ease: 'power2.out',
+    scrollTrigger: { trigger: '.projects-filter', start: 'top 90%' }
   });
 
+  /* ───── SECTION 05 — Portfolio horizontal scroll-in ───── */
   /* ───── SECTION 06 — Mentorship reveal ───── */
   gsap.from('.mentor-quote', {
     opacity: 0, x: -30, duration: 1.2,
@@ -2268,25 +2359,17 @@
   });
 
   /* ───── New section reveals ───── */
-  gsap.from('.about-stat', {
-    opacity: 0, y: 30, stagger: 0.12, duration: 1, ease: 'power2.out',
-    scrollTrigger: { trigger: '.about-stats', start: 'top 80%' }
+  gsap.from('.about-title h2', {
+    opacity: 0, y: 24, duration: 1, ease: 'power3.out',
+    scrollTrigger: { trigger: '.about', start: 'top 75%' }
   });
-  gsap.from('.about-lead p', {
-    opacity: 0, y: 20, duration: 1, stagger: 0.18, ease: 'power2.out',
-    scrollTrigger: { trigger: '.about-lead', start: 'top 80%' }
+  gsap.from('.about-side > *', {
+    opacity: 0, y: 20, stagger: 0.18, duration: 0.9, ease: 'power2.out',
+    scrollTrigger: { trigger: '.about-side', start: 'top 80%' }
   });
-  gsap.from('.about-year', {
-    opacity: 0, x: 20, duration: 1, ease: 'power2.out',
-    scrollTrigger: { trigger: '.about-statement', start: 'top 75%' }
-  });
-  gsap.from('.founder-strip', {
-    opacity: 0, y: 24, duration: 1.2, ease: 'power3.out',
-    scrollTrigger: { trigger: '.founder-strip', start: 'top 85%' }
-  });
-  gsap.from('.founder-name', {
-    opacity: 0, y: 30, duration: 1.4, delay: 0.2, ease: 'power3.out',
-    scrollTrigger: { trigger: '.founder-strip', start: 'top 85%' }
+  gsap.from('.about-metrics > div', {
+    opacity: 0, y: 24, stagger: 0.12, duration: 0.9, ease: 'power2.out',
+    scrollTrigger: { trigger: '.about-metrics', start: 'top 85%' }
   });
   gsap.from('.software-item', {
     opacity: 0, y: 24, stagger: 0.08, duration: 0.9, ease: 'power2.out',
